@@ -7869,3 +7869,63 @@ run(function()
 	})
 	
 end)
+
+run(function()
+    local transformed = false
+    local AnimeImages = {["Enabled"] = false}
+    local AnimeSelection = {["Value"] = "Waifu2"}
+
+    local animefunctions = {
+        Waifu1 = function() 
+            task.spawn(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/OcassionalTrollage/WeDoNOTEnjoyTrolling/main/AnimeGirl.lua"))()   
+            end)
+        end,
+        
+        Waifu2 = function() 
+            task.spawn(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/sstvskids/AssuraWatermark/main/animegirl"))()  
+            end)
+        end,
+    }
+
+    local function updateWaifuSelection()
+        if transformed then
+            local Anime = game.Players.LocalPlayer.PlayerGui:FindFirstChild("Anime")
+            if Anime then
+                Anime:Destroy()
+            end
+        end
+
+        animefunctions[AnimeSelection["Value"]]()
+        transformed = true
+    end
+
+    AnimeImages = vape.Categories.Render:CreateModule({
+        ["Name"] = "AnimeImages",
+        ["Function"] = function(callback) 
+            if callback then
+				if AnimeImages.Enabled then
+                	updateWaifuSelection()
+            	else
+            		local Anime = game.Players.LocalPlayer.PlayerGui:FindFirstChild("Anime")
+
+               	 	if Anime then
+                    	Anime:Destroy()
+					end
+                end
+            end
+        end,
+        ["ExtraText"] = function()
+            return AnimeSelection["Value"]
+        end
+    })
+    AnimeSelection = AnimeImages:CreateDropdown({
+        ["Name"] = "Selection",
+        ["Function"] = function(newSelection)
+            AnimeSelection["Value"] = newSelection
+            updateWaifuSelection()
+        end,
+        ["List"] = {"Waifu1", "Waifu2"}
+    })
+end)																																																																																																																									
