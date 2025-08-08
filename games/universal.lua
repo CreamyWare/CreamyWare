@@ -7871,61 +7871,121 @@ run(function()
 end)
 
 run(function()
-    local transformed = false
-    local AnimeImages = {["Enabled"] = false}
-    local AnimeSelection = {["Value"] = "Waifu2"}
-
+    local AnimeImages
+    local AnimeSelection
+    local anime_imageids = {
+        ['Waifu1'] = 'rbxassetid://14417732284',
+        ['Waifu2'] = 'rbxassetid://14665237598'
+    }
+	
     local animefunctions = {
         Waifu1 = function() 
             task.spawn(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/OcassionalTrollage/WeDoNOTEnjoyTrolling/main/AnimeGirl.lua"))()   
+				local scale
+				local scaledUI = Instance.new('UIScale')
+				local Anime = Instance.new('ScreenGui')
+				local ImageLabel = Instance.new('ImageLabel')
+				local scalebla = Instance.new('Frame')
+				Anime.Name = 'Anime'
+				Anime.Parent = coreGui
+				Anime.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+				scalebla.Name = 'ScaledGui'
+				scalebla.Size = UDim2.fromScale(1, 1)
+				scalebla.BackgroundTransparency = 1
+				scalebla.Parent = gui
+				ImageLabel.Parent = Anime
+				ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+				ImageLabel.BackgroundTransparency = 1
+				ImageLabel.BorderColor3 = Color3.new(0, 0, 0)
+				ImageLabel.BorderSizePixel = 0
+				ImageLabel.AnchorPoint = Vector2.new(1, 0)
+				ImageLabel.Position = UDim2.new(1, -1, 0, -3)
+				ImageLabel.Size = UDim2.new(0, 244, 0, 410)
+				ImageLabel.Image = tostring(anime_imageids[tostring(AnimeSelection.Value)])
+				ImageLabel.ScaleType = Enum.ScaleType.Fit
+				scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scaledUI.Parent = ImageLabel
+				scalebla.Size = UDim2.fromScale(1 / scale, 1 / scale)
+
+				AnimeImages:Clean(ImageLabel:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
+					scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				end))
             end)
         end,
         
         Waifu2 = function() 
             task.spawn(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/sstvskids/AssuraWatermark/main/animegirl"))()  
+				local scale
+				local scaledUI = Instance.new('UIScale')
+				local Anime = Instance.new('ScreenGui')
+				local ImageLabel = Instance.new('ImageLabel')
+				local scalebla = Instance.new('Frame')
+				Anime.Name = 'Anime'
+				Anime.Parent = coreGui
+				Anime.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+				scalebla.Name = 'ScaledGui'
+				scalebla.Size = UDim2.fromScale(1, 1)
+				scalebla.BackgroundTransparency = 1
+				scalebla.Parent = Anime
+				ImageLabel.Parent = Anime
+				ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+				ImageLabel.BackgroundTransparency = 1
+				ImageLabel.BorderColor3 = Color3.new(0, 0, 0)
+				ImageLabel.BorderSizePixel = 0
+				ImageLabel.AnchorPoint = Vector2.new(1, 0)
+				ImageLabel.Position = UDim2.new(1, -1, 0, -25)
+				ImageLabel.Size = UDim2.new(0, 244, 0, 410)
+				ImageLabel.Image = tostring(anime_imageids[tostring(AnimeSelection.Value)])
+				ImageLabel.ScaleType = Enum.ScaleType.Fit
+				scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scaledUI.Parent = ImageLabel
+				scalebla.Size = UDim2.fromScale(1 / scale, 1 / scale)
+
+				AnimeImages:Clean(ImageLabel:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
+					scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				end))
             end)
-        end,
+        end
     }
 
-    local function updateWaifuSelection()
-        if transformed then
-            local Anime = game.Players.LocalPlayer.PlayerGui:FindFirstChild("Anime")
-            if Anime then
-                Anime:Destroy()
-            end
-        end
-
-        animefunctions[AnimeSelection["Value"]]()
-        transformed = true
-    end
-
-    AnimeImages = vape.Categories.Render:CreateModule({
-        ["Name"] = "AnimeImages",
-        ["Function"] = function(callback) 
+    AnimeImages = vape.Legit:CreateModule({
+        Name = 'AnimeImages',
+        Function = function(callback) 
             if callback then
-				if AnimeImages.Enabled then
-                	updateWaifuSelection()
-            	else
-            		local Anime = game.Players.LocalPlayer.PlayerGui:FindFirstChild("Anime")
+				for i,v in coreGui:GetChildren() do
+                    if v.Name == 'Anime' then
+                        v:Destroy()
+                    end
+                end
 
-               	 	if Anime then
-                    	Anime:Destroy()
-					end
+                animefunctions[AnimeSelection.Value]()
+            else
+                for i,v in coreGui:GetChildren() do
+                    if v.Name == 'Anime' then
+                        v:Destroy()
+                    end
                 end
             end
         end,
-        ["ExtraText"] = function()
-            return AnimeSelection["Value"]
+        Tooltip = 'Displays your desired image of Anime girls.',
+        ExtraText = function()
+            return AnimeSelection.Value
         end
     })
-    AnimeSelection = AnimeImages:CreateDropdown({
-        ["Name"] = "Selection",
-        ["Function"] = function(newSelection)
-            AnimeSelection["Value"] = newSelection
-            updateWaifuSelection()
-        end,
-        ["List"] = {"Waifu1", "Waifu2"}
-    })
-end)																																																																																																																									
+	AnimeSelection = AnimeImages:CreateDropdown({
+		Name = 'Selection',
+		Function = function(val)
+			for i,v in coreGui:GetChildren() do
+                if v.Name == 'Anime' then
+                    v:Destroy()
+                end
+            end
+
+            animefunctions[val]()
+		end,
+		List = {'Waifu1', 'Waifu2'}
+	})
+end)
+																																																																																																																																																																																																																			
